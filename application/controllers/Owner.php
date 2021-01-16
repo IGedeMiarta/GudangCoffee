@@ -19,19 +19,19 @@ class Owner extends CI_Controller
 
     public function index()
     {
-        $data['pegawai'] = $this->dashboard->_pegawai();
-        $data['supplier'] = $this->dashboard->_supplier();
-        $data['produk'] = $this->dashboard->_produk();
-        $data['jual'] = $this->dashboard->_selling();
-        $data['terjual'] = $this->dashboard->_sell();
-        $data['status'] = $this->alert->notifikasi();
-        $data['teks'] = "Halaman Administrator Sistem Persedian Bahan Baku Kedai Kopi Gayo, admin dapat menambah pegawai dengan menginputkan data pegawai, mendaftarkan pegawai sebagai user untuk dapat login ke sistem sebagai Bag. kasir atau Bag. Gudang, dan dapat menambah data supplier";
+        // $data['pegawai'] = $this->dashboard->_pegawai();
+        // $data['supplier'] = $this->dashboard->_supplier();
+        // $data['produk'] = $this->dashboard->_produk();
+        // $data['jual'] = $this->dashboard->_selling();
+        // $data['terjual'] = $this->dashboard->_sell();
+        // $data['status'] = $this->alert->notifikasi();
+        // $data['teks'] = "Halaman Administrator Sistem Persedian Bahan Baku Kedai Kopi Gayo, admin dapat menambah pegawai dengan menginputkan data pegawai, mendaftarkan pegawai sebagai user untuk dapat login ke sistem sebagai Bag. kasir atau Bag. Gudang, dan dapat menambah data supplier";
 
         $data['judul'] = 'Dashboard';
         $this->load->view('temp/header', $data);
         $this->load->view('temp/topbar');
         $this->load->view('temp/sidebar');
-        $this->load->view('temp/blank');
+        $this->load->view('temp/dashboard');
         $this->load->view('temp/footer');
     }
 

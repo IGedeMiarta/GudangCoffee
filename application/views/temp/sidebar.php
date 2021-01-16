@@ -6,7 +6,8 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-
+        <div class="user-panel mt-n2 pb-3 mb-3 d-flex">
+        </div>
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
