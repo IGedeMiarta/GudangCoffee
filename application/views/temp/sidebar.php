@@ -110,7 +110,7 @@
                         </ul>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="<?= base_url('ups') ?>" class="nav-link">
+                                <a href="<?= base_url('gudang/material_in') ?>" class="nav-link">
                                     <i class="far fa-circle nav-icon mr-4"></i>
                                     <p>Bahan Masuk</p>
                                 </a>
@@ -118,7 +118,7 @@
                         </ul>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="<?= base_url('ups') ?>" class="nav-link">
+                                <a href="<?= base_url('gudang/material_out') ?>" class="nav-link">
                                     <i class="far fa-circle nav-icon mr-4"></i>
                                     <p>Bahan Keluar</p>
                                 </a>

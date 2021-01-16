@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 09, 2021 at 08:50 AM
+-- Generation Time: Jan 16, 2021 at 02:50 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.7
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `gayo`
+-- Database: `gudang`
 --
 
 -- --------------------------------------------------------
@@ -32,10 +32,20 @@ CREATE TABLE `material` (
   `kd_material` int(11) NOT NULL,
   `nama` varchar(255) NOT NULL,
   `varian` enum('Arabica','Robusta') NOT NULL,
-  `tipe` enum('Semi Washed','Full Washed','Natural Fermented','Honey Proses','Wine Proses','Wine Fermented') NOT NULL,
+  `tipe` enum('Semi Washed','Full Washed','Natural Fermented','Honey Proses','Wine Proses') NOT NULL,
   `stok` int(11) NOT NULL,
   `detail` enum('Kasir','Gudang') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `material`
+--
+
+INSERT INTO `material` (`kd_material`, `nama`, `varian`, `tipe`, `stok`, `detail`) VALUES
+(23, 'Gayo Premium', 'Arabica', 'Semi Washed', 1000, 'Gudang'),
+(24, 'Gayo Premium', 'Arabica', 'Semi Washed', 0, 'Kasir'),
+(25, 'Gayo Peaberry', 'Arabica', 'Natural Fermented', 10, 'Gudang'),
+(26, 'Gayo Peaberry', 'Arabica', 'Natural Fermented', 0, 'Kasir');
 
 -- --------------------------------------------------------
 
@@ -51,6 +61,13 @@ CREATE TABLE `material_keluar` (
   `detail` enum('kasir','gudang','','') NOT NULL,
   `status` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `material_keluar`
+--
+
+INSERT INTO `material_keluar` (`kd_keluar`, `kd_material`, `waktu`, `jumlah`, `detail`, `status`) VALUES
+(11, 25, '2021-01-16 14:48:51', 90, 'gudang', 1);
 
 --
 -- Triggers `material_keluar`
@@ -80,6 +97,14 @@ CREATE TABLE `material_masuk` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Dumping data for table `material_masuk`
+--
+
+INSERT INTO `material_masuk` (`kd_masuk`, `kd_material`, `waktu`, `jumlah`, `supplier`, `detail`) VALUES
+(37, 25, '2021-01-16 14:43:17', 100, 9, 'Gudang'),
+(38, 23, '2021-01-16 14:21:49', 1000, 9, 'Gudang');
+
+--
 -- Triggers `material_masuk`
 --
 DELIMITER $$
@@ -97,7 +122,7 @@ END
 $$
 DELIMITER ;
 DELIMITER $$
-CREATE TRIGGER `mtr_in_del` AFTER DELETE ON `material_masuk` FOR EACH ROW BEGIN 
+CREATE TRIGGER `mtrl_in_del` AFTER DELETE ON `material_masuk` FOR EACH ROW BEGIN 
 	UPDATE material SET stok = stok - OLD.jumlah
 	WHERE OLD.kd_material=material.kd_material AND OLD.detail='Gudang';
 END
@@ -132,54 +157,8 @@ CREATE TABLE `pegawai` (
 --
 
 INSERT INTO `pegawai` (`id_pegawai`, `nama`, `jenkel`, `tgl_lahir`, `no_hp`, `alamat`, `role`) VALUES
-(1, 'Assabil Nur', 'L', '1998-06-14', '08722217767', 'Jl. Magelang Km 5, Sleman', 3),
-(2, 'Andrei Asyari Zein', 'L', '1997-09-01', '081124888712', 'Mlati, Sleman Yogyakarta', 2),
-(4, 'Irwa Windi', 'L', '1998-05-24', '081631977730', 'simpang teritit, aceh', 2),
-(5, 'Diana Prastika', 'P', '2020-12-02', '081521555980', 'yogya', 2);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `penjualan`
---
-
-CREATE TABLE `penjualan` (
-  `kd_jual` int(11) NOT NULL,
-  `produk` int(11) NOT NULL,
-  `pembeli` varchar(255) NOT NULL,
-  `waktu` datetime NOT NULL,
-  `jumlah` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `produk`
---
-
-CREATE TABLE `produk` (
-  `kd_produk` int(11) NOT NULL,
-  `gambar` varchar(255) NOT NULL,
-  `nama` varchar(255) NOT NULL,
-  `deskripsi` text NOT NULL,
-  `material` int(11) NOT NULL,
-  `material_cost` int(11) NOT NULL,
-  `harga` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `retur`
---
-
-CREATE TABLE `retur` (
-  `kd_retur` int(11) NOT NULL,
-  `kd_material` int(11) NOT NULL,
-  `waktu` datetime NOT NULL,
-  `status` int(11) NOT NULL,
-  `detail` enum('kasir','gudang','','') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+(1, 'Indriani Puji', 'P', '1998-06-14', '08722217767', 'Jl. Magelang Km 5, Sleman', 3),
+(6, 'Assabil Nur alfiansyah', 'L', '2021-01-01', '081521555980', 'Yogyakarta', 3);
 
 -- --------------------------------------------------------
 
@@ -200,13 +179,7 @@ CREATE TABLE `supplier` (
 --
 
 INSERT INTO `supplier` (`id_sup`, `nama_sup`, `owner`, `no_hp`, `alamat`) VALUES
-(1, 'CV. kopi banda', 'Bapak Ruslan', '0812333879', 'Jl. Jendral A. Yani, Banda Aceh'),
-(2, 'Kopi Siantar Baru', 'Mhd. Ryan', '0852663899', 'Jl. Pematang Siantar, No 144 Medan '),
-(3, 'Koprasi Tani Mulia', 'Bapak Adlan', '0815677792', 'Banda Aceh'),
-(4, 'Koprasi Tani Banda', 'Muh. Amin Arifin', '0898880287', 'Jl. Penatu asri, Kel. Banda Mulia 2'),
-(5, 'CV. Rukun Semesta', 'Bpk. Surya Winata', '081521555980', 'Jl Penarukan 11. Ayani'),
-(6, 'Koprasi Petani Kopi', 'Mhd. Puyono', '081521599111', 'Jl. kemerdekaan, No 1441 Pematang Siantar'),
-(8, 'cv.temanggung', 'dika', '0812237676767676', 'temanggung');
+(9, 'CV. Rukun Punia', 'Bpk. Surya Winata', '081521555980', 'Mlati, Sleman, Yogyakarta');
 
 -- --------------------------------------------------------
 
@@ -229,8 +202,9 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`id`, `username`, `password`, `id_pegawai`, `role`) VALUES
 (1, 'admin', '$2y$10$FmO8fDbUZcPH7X9NP1NGoetVZ5YCo86uzQ2iBcOmH9UFBaNc1L86a', 0, 1),
 (4, 'kasir', '$2y$10$DJoHAGNekv4ZcOXk5fUQg.DQ0IS0tYB83KNr/Taviw7KfrGooiaVy', 4, 2),
-(5, 'gudang', '$2y$10$Rr1roEtcJzY1WSkSICHdXOhUNVkqJMDL0voCiX/ljJ0IpSo6lqeK2', 2, 3),
-(6, 'diana', '$2y$10$7YzIqby8P1Cvm1JAYsJYEeMjtV2/OGrGJVtEYl/YOKoGxraVEm/mW', 5, 2);
+(5, 'gudang', '$2y$10$Rr1roEtcJzY1WSkSICHdXOhUNVkqJMDL0voCiX/ljJ0IpSo6lqeK2', 2, 2),
+(6, 'diana', '$2y$10$7YzIqby8P1Cvm1JAYsJYEeMjtV2/OGrGJVtEYl/YOKoGxraVEm/mW', 5, 2),
+(7, 'indri', '$2y$10$3Z6wHHAm.bq7kBy9yaCItONA3TKYcNVE1Usaeexp3hVFNMfaNupwq', 1, 2);
 
 --
 -- Indexes for dumped tables
@@ -264,27 +238,6 @@ ALTER TABLE `pegawai`
   ADD PRIMARY KEY (`id_pegawai`);
 
 --
--- Indexes for table `penjualan`
---
-ALTER TABLE `penjualan`
-  ADD PRIMARY KEY (`kd_jual`),
-  ADD KEY `produk` (`produk`);
-
---
--- Indexes for table `produk`
---
-ALTER TABLE `produk`
-  ADD PRIMARY KEY (`kd_produk`),
-  ADD KEY `material` (`material`);
-
---
--- Indexes for table `retur`
---
-ALTER TABLE `retur`
-  ADD PRIMARY KEY (`kd_retur`),
-  ADD KEY `kd_material` (`kd_material`);
-
---
 -- Indexes for table `supplier`
 --
 ALTER TABLE `supplier`
@@ -304,55 +257,37 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `kd_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `kd_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `material_keluar`
 --
 ALTER TABLE `material_keluar`
-  MODIFY `kd_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `kd_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `material_masuk`
 --
 ALTER TABLE `material_masuk`
-  MODIFY `kd_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `kd_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `pegawai`
 --
 ALTER TABLE `pegawai`
-  MODIFY `id_pegawai` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `penjualan`
---
-ALTER TABLE `penjualan`
-  MODIFY `kd_jual` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
-
---
--- AUTO_INCREMENT for table `produk`
---
-ALTER TABLE `produk`
-  MODIFY `kd_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT for table `retur`
---
-ALTER TABLE `retur`
-  MODIFY `kd_retur` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pegawai` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id_sup` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_sup` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
@@ -370,24 +305,6 @@ ALTER TABLE `material_keluar`
 ALTER TABLE `material_masuk`
   ADD CONSTRAINT `material_masuk_ibfk_1` FOREIGN KEY (`kd_material`) REFERENCES `material` (`kd_material`),
   ADD CONSTRAINT `material_masuk_ibfk_2` FOREIGN KEY (`supplier`) REFERENCES `supplier` (`id_sup`);
-
---
--- Constraints for table `penjualan`
---
-ALTER TABLE `penjualan`
-  ADD CONSTRAINT `penjualan_ibfk_1` FOREIGN KEY (`produk`) REFERENCES `produk` (`kd_produk`);
-
---
--- Constraints for table `produk`
---
-ALTER TABLE `produk`
-  ADD CONSTRAINT `produk_ibfk_1` FOREIGN KEY (`material`) REFERENCES `material` (`kd_material`);
-
---
--- Constraints for table `retur`
---
-ALTER TABLE `retur`
-  ADD CONSTRAINT `retur_ibfk_1` FOREIGN KEY (`kd_material`) REFERENCES `material` (`kd_material`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
