@@ -10,16 +10,12 @@ class Dashboard extends CI_Model
     {
         return $this->db->query("SELECT COUNT(id_sup) as jml FROM supplier")->row_array();
     }
-    function _produk()
+    function _bahan()
     {
-        return $this->db->query("SELECT COUNT(kd_produk) as jml FROM produk")->row_array();
+        return $this->db->query("SELECT COUNT(kd_material) as jml FROM material WHERE detail='Gudang'")->row_array();
     }
-    function _sell()
+    function _bahan_limit()
     {
-        return $this->db->query("SELECT COUNT(kd_jual) as jml FROM penjualan")->row_array();
-    }
-    function _selling()
-    {
-        return $this->db->query("SELECT SUM(harga) AS sell FROM `penjualan` JOIN produk ON penjualan.produk=produk.kd_produk")->row_array();
+        return $this->db->query("SELECT * FROM material WHERE stok <= 50 AND detail='Gudang' ORDER BY stok ASC LIMIT 1")->row_array();
     }
 }

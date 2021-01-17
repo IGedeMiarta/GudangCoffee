@@ -2,8 +2,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <img src="<?= base_url('assets/logo/logo-white.png') ?>" class="ml-5 mt-2" alt="AdminLTE Logo" width="100px" style="opacity: .8">
-
-
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="user-panel mt-n2 pb-3 mb-3 d-flex">
@@ -40,7 +38,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?= base_url('owner') ?>" class="nav-link">
+                        <a href="<?= base_url('owner/material') ?>" class="nav-link">
                             <i class="nav-icon fas fa-archive mr-4"></i>
                             <p>
                                 Bahan Baku

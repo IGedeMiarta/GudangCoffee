@@ -5,13 +5,12 @@
              <div class="container-fluid">
                  <div class="row mb-2">
                      <div class="col-sm-6">
-                         <h1>Edit Bahan Masuk</h1>
+                         <h1>Bahan Keluar</h1>
                      </div>
                      <div class="col-sm-6">
                          <ol class="breadcrumb float-sm-right">
                              <li class="breadcrumb-item"><a href="<?= base_url('gudang') ?>">Home</a></li>
-                             <li class="breadcrumb-item"><a href="<?= base_url('gudang/material_in') ?>">Bahan Masuk</a></li>
-                             <li class="breadcrumb-item active">Edit Bahan Masuk</li>
+                             <li class="breadcrumb-item active">Bahan Keluar</li>
                          </ol>
                      </div>
                  </div>
@@ -22,42 +21,28 @@
          <section class="content">
 
              <!-- Default box -->
-
              <div class="card">
+                 <div class="card-header badge badge-dark">
+                     <h5 class="text-dark">Edit Material Keluar</h5>
+                 </div>
                  <div class="card-body">
-                     <form method="POST" action="<?= base_url('gudang/material_update/') . $edit['kd_masuk'] ?>">
-
+                     <form method="POST" action="<?= base_url('gudang/material_out_update/') . $out['kd_keluar'] ?>">
                          <div class="form-group row">
                              <label for="example-text-input" class="col-sm-2 col-form-label">Nama Material</label>
                              <div class="col-sm-10">
-                                 <select class="form-control" name="material">
-                                     <option value="<?= $edit['kd_material'] ?>" selected><?= $edit['nama'] ?></option>
-                                     <?php foreach ($material as $mtrl) { ?>
-                                         <option value="<?= $mtrl->kd_material; ?>"><?= $mtrl->nama; ?></option>
-                                     <?php } ?>
-                                 </select>
+                                 <input type="text" class="form-control" name="nama" value="<?= $out['nama'] ?>" readonly>
                              </div>
                          </div>
                          <div class="form-group row">
-                             <label for="example-text-input" class="col-sm-2 col-form-label">Kemasan</label>
+                             <label for="example-text-input" class="col-sm-2 col-form-label">Tersedia</label>
                              <div class="col-sm-10">
-                                 <select name="jumlah" id="" class="form-control">
-                                     <option value="<?= $edit['jumlah'] ?>"><?= $edit['jumlah'] ?> gram</option>
-                                     <option value="100">100 gram</option>
-                                     <option value="150">150 gram</option>
-                                 </select>
+                                 <input type="number" class="form-control" id="stok" name="stok" value="<?= $out['stok'] ?>" readonly>
                              </div>
                          </div>
-
                          <div class="form-group row">
-                             <label for="example-text-input" class="col-sm-2 col-form-label">Nama Supplier</label>
+                             <label for="example-text-input" class="col-sm-2 col-form-label">Jumlah</label>
                              <div class="col-sm-10">
-                                 <select class="form-control" name="supplier">
-                                     <option value="<?= $edit['id_sup'] ?>" selected><?= $edit['nama_sup'] ?></option>
-                                     <?php foreach ($supplier as $s) { ?>
-                                         <option value="<?= $s->id_sup; ?>"><?= $s->nama_sup; ?></option>
-                                     <?php } ?>
-                                 </select>
+                                 <input type="number" class="form-control" id="jumlah" name="jumlah" value="<?= $out['jumlah'] ?>">
                              </div>
                          </div>
                          <div class="row">
@@ -68,11 +53,11 @@
                                  <button type="submit" class="btn btn-primary mt-3">Simpan</button>
                              </div>
                          </div>
-
                      </form>
                  </div>
 
              </div>
+
              <!-- /.card -->
 
          </section>

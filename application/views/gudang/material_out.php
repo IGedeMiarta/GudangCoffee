@@ -19,7 +19,7 @@
 
          <!-- Main content -->
          <section class="content">
-
+             <?php echo $this->session->flashdata('messege'); ?>
              <!-- Default box -->
              <div class="card">
                  <div class="card-header badge badge-dark">
@@ -33,7 +33,7 @@
                                  <select class="form-control" name="material" id="material" onchange="autofill()">
                                      <option selected>-- Pilih</option>
                                      <?php foreach ($material as $mtrl) { ?>
-                                         <option value="<?= $mtrl->kd_material; ?>"><?= $mtrl->nama; ?></option>
+                                         <option value="<?= $mtrl->kd_material; ?>"><?= $mtrl->bentuk . ' - ' . $mtrl->nama; ?></option>
                                      <?php } ?>
                                  </select>
                              </div>
@@ -41,13 +41,17 @@
                          <div class="form-group row">
                              <label for="example-text-input" class="col-sm-2 col-form-label">Tersedia</label>
                              <div class="col-sm-10">
-                                 <input type="number" class="form-control" id="stok" name="jumlah" placeholder="Material Tersedia / gram" readonly>
+                                 <input type="number" class="form-control" id="stok" name="stok" placeholder="Material Tersedia / gram" readonly>
                              </div>
                          </div>
                          <div class="form-group row">
-                             <label for="example-text-input" class="col-sm-2 col-form-label">Jumlah</label>
+                             <label for="example-text-input" class="col-sm-2 col-form-label">Kemasan</label>
                              <div class="col-sm-10">
-                                 <input type="number" class="form-control" id="jumlah" name="jumlah" onkeyup="autofill()" placeholder="Jumlah Material Keluar / gram">
+                                 <select name="jumlah" id="" class="form-control">
+                                     <option value="">--pilih</option>
+                                     <option value="100">100 gram</option>
+                                     <option value="150">150 gram</option>
+                                 </select>
                              </div>
                          </div>
                          <div class="row">
@@ -77,7 +81,7 @@
                                  <th class="text-center" scope="col">
                                      Jumlah Kirim
                                  </th>
-                                 <!-- <th scope="col">Status</th> -->
+                                 <th scope="col">Opsi</th>
                              </tr>
                          </thead>
 
@@ -89,15 +93,13 @@
                                      <th width="10px" scope="row"><?= $no++ ?></th>
 
                                      <td><?= $mtrl->nama ?></td>
-                                     <td><?= $mtrl->waktu ?></td>
+                                     <td><?= date("d M Y", strtotime($mtrl->waktu)) ?></td>
                                      <td class="text-center"><?= $mtrl->jumlah ?> gram</td>
-                                     <!-- <td><?php
-                                                if ($mtrl->status == 1) {
-                                                    echo "Menunggu Konfirmasi";
-                                                } else {
-                                                    echo "Diterima";
-                                                }
-                                                ?> </td> -->
+                                     <td width=150px>
+                                         <a href="<?= base_url('gudang/material_out_edt/') . $mtrl->kd_keluar ?>" class="badge badge-warning"><i class="fas fa-edit"></i> Edit</a>
+                                         <a href="<?= base_url('gudang/material_out_del/') . $mtrl->kd_keluar ?>" onclick="return confirm('Yakin Ingin Hapus?')" class="badge badge-danger"><i class="fas fa-trash"></i> Hapus</a>
+
+                                     </td>
                                  </tr>
                              <?php } ?>
                          </tbody>

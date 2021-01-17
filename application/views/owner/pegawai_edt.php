@@ -68,22 +68,7 @@
                                  <?= form_error('alamat', '<small class="text-danger pl-3">', '</small>');  ?>
                              </div>
                          </div>
-                         <!-- <div class="form-group row">
-                                 <label for="example-text-input" class="col-sm-2 col-form-label">Job Desk</label>
-                                 <div class="col-sm-10">
-                                     <select class="form-control" name="desk">
-                                         <option selected value="<?= $pegawai->role ?>"><?php
-                                                                                        if ($pegawai->role == 2) {
-                                                                                            echo "Bagian Kasir";
-                                                                                        } else {
-                                                                                            echo "Bagian Gudang";
-                                                                                        }
-                                                                                        ?></option>
-                                         <option value="1">Bagian Kasir</option>
-                                         <option value="2">Bagian Gudang</option>
-                                     </select>
-                                 </div>
-                             </div> -->
+
                          <div class="row">
                              <div class="col-sm-2">
 

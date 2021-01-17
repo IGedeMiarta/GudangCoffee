@@ -6,10 +6,10 @@ class Gudang extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        if ($this->session->userdata('status') != "login_gudang") {
-            $this->session->set_flashdata('messege', '<div class="alert alert-danger" role="alert">Anda Belum Login!, Silahkan Login Terlebih dahulu</div>');
-            redirect('login');
-        }
+        // if ($this->session->userdata('status') != "login_gudang") {
+        //     $this->session->set_flashdata('messege', '<div class="alert alert-danger" role="alert">Anda Belum Login!, Silahkan Login Terlebih dahulu</div>');
+        //     redirect('login');
+        // }
         $this->load->library('form_validation');
         $this->load->model('gudang_model');
         $this->load->model('dashboard');
@@ -23,17 +23,15 @@ class Gudang extends CI_Controller
         $data['user'] = $this->gudang_model->user($kd);
         $data['pegawai'] = $this->dashboard->_pegawai();
         $data['supplier'] = $this->dashboard->_supplier();
-        // $data['produk'] = $this->dashboard->_produk();
-        // $data['jual'] = $this->dashboard->_selling();
-        // $data['terjual'] = $this->dashboard->_sell();
+        $data['bahan'] = $this->dashboard->_bahan();
+        $data['limit'] = $this->dashboard->_bahan_limit();
         $data['teks'] = "Halaman Gudang, Sistem Persedian Bahan Baku Kedai Kopi Gayo, Bag. Gudang dapat menambahkan data material bahan baku, menginputkan data bahan masuk dan keluar dan manajeman stok bahan baku produksi di kedai kopi umah kopi gayo";
-        $data['alert'] = $this->alert->notif();
-        $data['status'] = $this->alert->notifikasi();
+        $data['role'] = 'Bag. Gudang';
         $data['judul'] = 'Dashboard';
         $this->load->view('temp/header', $data);
         $this->load->view('temp/topbar');
         $this->load->view('temp/sidebar');
-        $this->load->view('temp/blank');
+        $this->load->view('temp/dashboard', $data);
         $this->load->view('temp/footer');
     }
     public function material()
@@ -44,6 +42,7 @@ class Gudang extends CI_Controller
         $data['varian'] = $this->gudang_model->material_enum('material', 'varian');
         $data['tipe'] = $this->gudang_model->material_enum('material', 'tipe');
         $data['detail'] = $this->gudang_model->material_enum('material', 'detail');
+        $data['bentuk'] = $this->gudang_model->material_enum('material', 'bentuk');
         $data['material'] = $this->gudang_model->stok_gudang();
         $data['kasir'] = $this->gudang_model->stok_kasir();
         $data['status'] = $this->alert->notifikasi();
@@ -57,7 +56,7 @@ class Gudang extends CI_Controller
 
     public function material_add_act()
     {
-        $this->form_validation->set_rules('name', 'name', 'trim|required|is_unique[material.nama]', [
+        $this->form_validation->set_rules('name', 'name', 'trim|required', [
             'is_unique' => 'Material Sudah Terdaftar'
         ]);
         $kd = $this->session->userdata('pegawai');
@@ -66,6 +65,7 @@ class Gudang extends CI_Controller
         $data['varian'] = $this->gudang_model->material_enum('material', 'varian');
         $data['tipe'] = $this->gudang_model->material_enum('material', 'tipe');
         $data['detail'] = $this->gudang_model->material_enum('material', 'detail');
+        $data['bentuk'] = $this->gudang_model->material_enum('material', 'bentuk');
         $data['status'] = $this->alert->notifikasi();
         $data['alert'] = $this->alert->notif();
         $data['judul'] = 'Tambah Bahan Baku';
@@ -79,20 +79,15 @@ class Gudang extends CI_Controller
             $nama = $this->input->post('name', true);
             $varian = $this->input->post('varian', true);
             $tipe = $this->input->post('tipe', true);
+            $bentuk = $this->input->post('bentuk', true);
             $data = [
                 'nama' => $nama,
                 'varian' => $varian,
                 'tipe' => $tipe,
+                'bentuk' => $bentuk,
                 'detail' => 'Gudang'
             ];
-            $data2 = [
-                'nama' => $nama,
-                'varian' => $varian,
-                'tipe' => $tipe,
-                'detail' => 'Kasir'
-            ];
             $this->gudang_model->insert($data, 'material');
-            $this->gudang_model->insert($data2, 'material');
             redirect('gudang/material');
         }
     }
@@ -104,6 +99,7 @@ class Gudang extends CI_Controller
         $data['alert'] = $this->alert->notif();
         $data['material'] = $this->gudang_model->read('material')->result();
         $data['varian'] = $this->gudang_model->material_enum('material', 'varian');
+        $data['bentuk'] = $this->gudang_model->material_enum('material', 'bentuk');
         $data['tipe'] = $this->gudang_model->material_enum('material', 'tipe');
         $data['detail'] = $this->gudang_model->material_enum('material', 'detail');
         $data['edit'] = $this->gudang_model->material_edt($kd_material);
@@ -213,9 +209,8 @@ class Gudang extends CI_Controller
 
     public function material_in_del($kd_material)
     {
-        $where = array('kd_material' => $kd_material);
+        $where = array('kd_masuk' => $kd_material);
         $this->gudang_model->delete($where, 'material_masuk');
-
         redirect('gudang/material_in');
     }
 
@@ -235,34 +230,40 @@ class Gudang extends CI_Controller
         $this->load->view('temp/footer');
     }
 
-    public function material_out_add()
+    public function material_out_edt($kd)
     {
-        $data['alert'] = $this->alert->notif();
-        $kd = $this->session->userdata('pegawai');
-        $data['user'] = $this->gudang_model->user($kd);
-        $data['material'] = $this->gudang_model->stok_gudang();
-        $data['supplier'] = $this->gudang_model->read('supplier')->result();
-        $data['status'] = $this->alert->notifikasi();
-        $this->load->view('default/header');
-        $this->load->view('default/sidebar', $data);
-        $this->load->view('default/topbar', $data);
-        $this->load->view('gudang/material_out_add', $data);
-        $this->load->view('default/footer');
+        $data['judul'] = 'Edit Material Keluar';
+        $data['out'] = $this->gudang_model->edit_out($kd);
+        $this->load->view('temp/header', $data);
+        $this->load->view('temp/topbar');
+        $this->load->view('temp/sidebar');
+        $this->load->view('gudang/material_out_edt', $data);
+        $this->load->view('temp/footer');
     }
     public function material_out_act()
     {
         $material = $this->input->post('material', true);
         $waktu = date("Y-m-d H:i:s");
         $jumlah = $this->input->post('jumlah', true);
-
-        $data = [
-            'kd_material' => $material,
-            'waktu' => $waktu,
-            'jumlah' => $jumlah,
-            'detail' => 'Gudang',
-            'status' => 1
-        ];
-        $this->gudang_model->insert($data, 'material_keluar');
+        $stok = $this->input->post('stok');
+        if ($jumlah <= $stok) {
+            $data = [
+                'kd_material' => $material,
+                'waktu' => $waktu,
+                'jumlah' => $jumlah,
+                'detail' => 'Gudang',
+                'status' => 1
+            ];
+            $this->gudang_model->insert($data, 'material_keluar');
+            redirect('gudang/material_out');
+        } else {
+            $this->session->set_flashdata('messege', '<script language="javascript">alert("Jumlah Yang Dimasukan Melebihi Stok!!!")</script>');
+            $this->material_out();
+        }
+    }
+    public function material_out_del($kd_keluar)
+    {
+        $this->gudang_model->delete(['kd_keluar' => $kd_keluar], 'material_keluar');
         redirect('gudang/material_out');
     }
     // =============================================================================================

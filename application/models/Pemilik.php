@@ -39,4 +39,8 @@ class Pemilik extends CI_Model
     {
         return $this->db->query("SELECT kd_produk,produk.nama AS nama_produk, material.nama AS nama_material,material_cost,deskripsi,harga FROM produk JOIN material ON produk.material=material.kd_material")->result();
     }
+    function del_pegawai($id_pegawai)
+    {
+        return $this->db->query("SELECT pegawai.id_pegawai,nama,jenkel,tgl_lahir,no_hp,alamat,pegawai.role,user.id AS id_user,  COALESCE(username,'null') AS user FROM `pegawai` LEFT JOIN user ON pegawai.id_pegawai=user.id_pegawai WHERE pegawai.id_pegawai=$id_pegawai ORDER BY pegawai.id_pegawai ASC")->row_array();
+    }
 }

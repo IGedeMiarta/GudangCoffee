@@ -72,8 +72,6 @@
                                      <td><?= $p->alamat ?></td>
                                      <td><?php
                                             if ($p->role == 2) {
-                                                echo " Kasir";
-                                            } else {
                                                 echo " Gudang";
                                             }
                                             ?></td>
@@ -86,7 +84,7 @@
                                      </td>
                                      <td>
                                          <a href="<?= base_url('owner/pegawai_edt/' . $p->id_pegawai) ?>" class="badge badge-warning pull-right"><i class="dripicons-document-edit"></i> Edit</a>
-                                         <a href="<?= base_url('owner/pegawai_del/' . $p->id_pegawai) ?>" class="badge badge-danger pull-right"><i class="dripicons-trash"></i> Hapus</a>
+                                         <a href="<?= base_url('owner/pegawai_del/' . $p->id_pegawai) ?>" onclick="return confirm('Yakin Ingin Hapus?')" class="badge badge-danger pull-right"><i class="dripicons-trash"></i> Hapus</a>
                                      </td>
                                  </tr>
                              <?php } ?>

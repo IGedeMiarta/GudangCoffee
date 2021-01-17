@@ -15,23 +15,24 @@ class Owner extends CI_Controller
         $this->load->model('dashboard');
         $this->load->model('laporan');
         $this->load->model('alert');
+        $this->load->model('gudang_model');
     }
 
     public function index()
     {
-        // $data['pegawai'] = $this->dashboard->_pegawai();
-        // $data['supplier'] = $this->dashboard->_supplier();
+        $data['pegawai'] = $this->dashboard->_pegawai();
+        $data['supplier'] = $this->dashboard->_supplier();
         // $data['produk'] = $this->dashboard->_produk();
         // $data['jual'] = $this->dashboard->_selling();
         // $data['terjual'] = $this->dashboard->_sell();
         // $data['status'] = $this->alert->notifikasi();
-        // $data['teks'] = "Halaman Administrator Sistem Persedian Bahan Baku Kedai Kopi Gayo, admin dapat menambah pegawai dengan menginputkan data pegawai, mendaftarkan pegawai sebagai user untuk dapat login ke sistem sebagai Bag. kasir atau Bag. Gudang, dan dapat menambah data supplier";
-
+        $data['teks'] = "Halaman Administrator Sistem Persedian Bahan Baku Gudang Kopi Gayo, admin dapat menambah pegawai dengan menginputkan data pegawai, mendaftarkan pegawai sebagai user untuk dapat login ke sistem sebagai Bag. kasir atau Bag. Gudang, dan dapat menambah data supplier";
+        $data['role'] = 'Owner | Administrator';
         $data['judul'] = 'Dashboard';
         $this->load->view('temp/header', $data);
         $this->load->view('temp/topbar');
         $this->load->view('temp/sidebar');
-        $this->load->view('temp/dashboard');
+        $this->load->view('temp/dashboard', $data);
         $this->load->view('temp/footer');
     }
 
@@ -201,11 +202,12 @@ class Owner extends CI_Controller
         $data['pegawai'] = $this->Pemilik->edit($where, 'pegawai');
         $data['alert'] = $this->alert->notif();
         $data['status'] = $this->alert->notifikasi();
-        $this->load->view('default/header');
-        $this->load->view('default/sidebar', $data);
-        $this->load->view('default/topbar', $data);
-        $this->load->view('owner/pegawai_edt', $data);
-        $this->load->view('default/footer');
+        $data['judul'] = 'Edit Pegawai';
+        $this->load->view('temp/header', $data);
+        $this->load->view('temp/topbar');
+        $this->load->view('temp/sidebar');
+        $this->load->view('owner/pegawai_edt');
+        $this->load->view('temp/footer');
     }
 
     public function pegawai_edt_act($id_pegawai)
@@ -233,8 +235,19 @@ class Owner extends CI_Controller
 
     public function pegawai_del($id_pegawai)
     {
-        $where = array('id_pegawai' => $id_pegawai);
-        $this->Pemilik->delete($where, 'pegawai');
+        $pegawai = $this->Pemilik->del_pegawai($id_pegawai);
+        if ($pegawai['user'] == 'null') {
+            $where = array('id_pegawai' => $id_pegawai);
+            $this->Pemilik->delete($where, 'pegawai');
+            $data['akun'] = 'hapus akun != null';
+        } else {
+            $user = $pegawai['id_user'];
+            $this->Pemilik->delete(['id' => $user], 'user');
+            $where = array('id_pegawai' => $id_pegawai);
+            $data['akun'] = 'hapus akun != null';
+            $this->Pemilik->delete($where, 'pegawai');
+        }
+
         redirect('owner/pegawai');
     }
 
@@ -245,11 +258,12 @@ class Owner extends CI_Controller
         $data['pegawai'] = $this->Pemilik->edit($where, 'pegawai');
         $data['alert'] = $this->alert->notif();
         $data['status'] = $this->alert->notifikasi();
-        $this->load->view('default/header');
-        $this->load->view('default/sidebar', $data);
-        $this->load->view('default/topbar', $data);
+        $data['judul'] = 'Buat User';
+        $this->load->view('temp/header', $data);
+        $this->load->view('temp/topbar');
+        $this->load->view('temp/sidebar');
         $this->load->view('owner/regist', $data);
-        $this->load->view('default/footer');
+        $this->load->view('temp/footer');
     }
 
     public function regist_act($id_pegawai)
@@ -298,6 +312,24 @@ class Owner extends CI_Controller
         $this->load->view('default/topbar', $data);
         $this->load->view('owner/produk', $data);
         $this->load->view('default/footer');
+    }
+    public function material()
+    {
+        $kd = $this->session->userdata('pegawai');
+        $data['user'] = $this->gudang_model->user($kd);
+        $data['alert'] = $this->alert->notif();
+        $data['varian'] = $this->gudang_model->material_enum('material', 'varian');
+        $data['tipe'] = $this->gudang_model->material_enum('material', 'tipe');
+        $data['detail'] = $this->gudang_model->material_enum('material', 'detail');
+        $data['material'] = $this->gudang_model->stok_gudang();
+        $data['kasir'] = $this->gudang_model->stok_kasir();
+        $data['status'] = $this->alert->notifikasi();
+        $data['judul'] = 'Stok Bahan';
+        $this->load->view('temp/header', $data);
+        $this->load->view('temp/topbar');
+        $this->load->view('temp/sidebar');
+        $this->load->view('gudang/material', $data);
+        $this->load->view('temp/footer');
     }
 
     // =======================================================================================

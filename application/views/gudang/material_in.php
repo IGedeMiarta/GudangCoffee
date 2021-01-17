@@ -34,15 +34,19 @@
                                  <select class="form-control" name="material">
                                      <option selected>-- Pilih</option>
                                      <?php foreach ($material as $mtrl) { ?>
-                                         <option value="<?= $mtrl->kd_material; ?>"><?= $mtrl->nama; ?></option>
+                                         <option value="<?= $mtrl->kd_material; ?>"><?= $mtrl->bentuk . ' - ' . $mtrl->nama   ?></option>
                                      <?php } ?>
                                  </select>
                              </div>
                          </div>
                          <div class="form-group row">
-                             <label for="example-text-input" class="col-sm-2 col-form-label">Jumlah</label>
+                             <label for="example-text-input" class="col-sm-2 col-form-label">Kemasan</label>
                              <div class="col-sm-10">
-                                 <input type="number" class="form-control" id="jumlah" name="jumlah" placeholder="Jumlah Material Masuk / gram" value="<?= set_value('jumlah'); ?>">
+                                 <select name="jumlah" id="" class="form-control">
+                                     <option value="">--pilih</option>
+                                     <option value="100">100 gram</option>
+                                     <option value="150">150 gram</option>
+                                 </select>
                              </div>
                          </div>
 
@@ -97,16 +101,16 @@
                                  <tr>
                                      <th width="10px" scope="row"><?= $no++ ?></th>
 
-                                     <td><?= $mtrl->nama ?></td>
+                                     <td><?= $mtrl->bentuk . ' - ' . $mtrl->nama ?></td>
                                      <td><?= $mtrl->nama_sup ?></td>
-                                     <td><?= $mtrl->waktu ?></td>
+                                     <td><?= date("d M Y", strtotime($mtrl->waktu)) ?></td>
                                      <td class="text-center"><?= $mtrl->jumlah ?> gram</td>
                                      <!-- <td>
                                     <a href="" class="badge badge-info"><i class="wy-text-info"></i>Detail</a>
                                 </td> -->
                                      <td>
                                          <a href="<?= base_url('gudang/material_in_edt/' . $mtrl->kd_material) ?>" class="badge badge-warning"><i class="dripicons-document-edit"></i> Edit</a>
-                                         <a href="<?= base_url('gudang/material_in_del/' . $mtrl->kd_material) ?>" class="badge badge-danger"><i class="dripicons-trash"></i> Hapus</a>
+                                         <a href="<?= base_url('gudang/material_in_del/' . $mtrl->kd_masuk) ?>" onclick="return confirm('Yakin Hapus?')" class="badge badge-danger"><i class="dripicons-trash"></i> Hapus</a>
                                      </td>
                                  </tr>
                              <?php } ?>

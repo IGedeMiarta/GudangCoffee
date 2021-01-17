@@ -5,12 +5,17 @@
              <div class="container-fluid">
                  <div class="row mb-2">
                      <div class="col-sm-6">
-                         <h1>Blank Page</h1>
+                         <h1>Dashboard</h1>
                      </div>
                      <div class="col-sm-6">
                          <ol class="breadcrumb float-sm-right">
-                             <li class="breadcrumb-item"><a href="<?= base_url('owner') ?>">Home</a></li>
-                             <li class="breadcrumb-item active">Blank Page</li>
+                             <li class="breadcrumb-item"><a href="<?php if ($this->session->userdata('side') == 'admin') {
+                                                                        echo base_url('owner');
+                                                                    } else {
+                                                                        echo base_url('gudang');
+                                                                    }
+                                                                    ?>">Home</a></li>
+                             <li class="breadcrumb-item active">Dashboard</li>
                          </ol>
                      </div>
                  </div>
@@ -19,77 +24,102 @@
 
          <!-- Main content -->
          <section class="content">
-             <div class="row">
-                 <div class="col-lg-3 col-6">
-                     <!-- small box -->
-                     <div class="small-box bg-info">
-                         <div class="inner">
-                             <h3>150</h3>
+             <div class="content">
+                 <div class="container-fluid">
+                     <!-- start -->
+                     <div class="jumbotron text-center">
+                         <div class="col-sm-8 mx-auto">
+                             <h1>Selamat datang!</h1>
+                             <p><?= $teks ?></b>.</p>
+                             <p>
+                                 Anda telah login sebagai <b><?php echo $role ?></b>
+                             </p>
 
-                             <p>New Orders</p>
                          </div>
-                         <div class="icon">
-                             <i class="ion ion-bag"></i>
-                         </div>
-                         <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                      </div>
-                 </div>
-                 <!-- ./col -->
-                 <div class="col-lg-3 col-6">
-                     <!-- small box -->
-                     <div class="small-box bg-success">
-                         <div class="inner">
-                             <h3>53<sup style="font-size: 20px">%</sup></h3>
+                     <!-- Small boxes (Stat box) -->
+                     <div class="row">
+                         <div class="col-lg-3 col-6">
+                             <!-- small box -->
+                             <div class="small-box bg-info">
+                                 <div class="inner">
+                                     <h3><?= $supplier['jml'] ?></h3>
 
-                             <p>Bounce Rate</p>
+                                     <p>Supplier</p>
+                                 </div>
+                                 <div class="icon">
+                                     <i class="ion ion-bag"></i>
+                                 </div>
+                                 <?php if ($this->session->userdata('side') == 'admin') { ?>
+                                     <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                 <?php } ?>
+                             </div>
                          </div>
-                         <div class="icon">
-                             <i class="ion ion-stats-bars"></i>
-                         </div>
-                         <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                     </div>
-                 </div>
-                 <!-- ./col -->
-                 <div class="col-lg-3 col-6">
-                     <!-- small box -->
-                     <div class="small-box bg-warning">
-                         <div class="inner">
-                             <h3>44</h3>
+                         <!-- ./col -->
+                         <?php if ($this->session->userdata('side') == 'gudang') { ?>
 
-                             <p>User Registrations</p>
-                         </div>
-                         <div class="icon">
-                             <i class="ion ion-person-add"></i>
-                         </div>
-                         <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                     </div>
-                 </div>
-                 <!-- ./col -->
-                 <div class="col-lg-3 col-6">
-                     <!-- small box -->
-                     <div class="small-box bg-danger">
-                         <div class="inner">
-                             <h3>65</h3>
+                             <div class="col-lg-3 col-6">
+                                 <!-- small box -->
+                                 <a href="<?= base_url('gudang/material') ?>" class="text-dark">
+                                     <div class="small-box bg-danger">
+                                         <div class="inner">
 
-                             <p>Unique Visitors</p>
+                                             <h3><?= $limit['stok'] ?><sup style="font-size: 20px">gram</sup></h3>
+                                             <p><?= $limit['nama'] . ' - ' . $limit['varian'] ?></p>
+
+                                         </div>
+                                         <div class="icon">
+                                             <i class="ion ion-stats-bars"></i>
+                                         </div>
+                                         <!-- <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a> -->
+                                     </div>
+                                 </a>
+                             </div>
+                         <?php } ?>
+                         <!-- ./col -->
+                         <div class="col-lg-3 col-6">
+                             <!-- small box -->
+                             <div class="small-box bg-warning">
+                                 <div class="inner">
+                                     <h3><?= $pegawai['jml'] ?></h3>
+
+                                     <p>Pegawai</p>
+                                 </div>
+                                 <div class="icon">
+                                     <i class="ion ion-person-add"></i>
+                                 </div>
+                                 <?php if ($this->session->userdata('side') == 'admin') { ?>
+                                     <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                 <?php } ?>
+                             </div>
                          </div>
-                         <div class="icon">
-                             <i class="ion ion-pie-graph"></i>
+                         <!-- ./col -->
+                         <div class="col-lg-3 col-6">
+                             <!-- small box -->
+                             <div class="small-box bg-success">
+                                 <div class="inner">
+                                     <h3>65</h3>
+
+                                     <p>Unique Visitors</p>
+                                 </div>
+                                 <div class="icon">
+                                     <i class="ion ion-pie-graph"></i>
+                                 </div>
+                                 <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                             </div>
                          </div>
-                         <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                         <!-- ./col -->
                      </div>
-                 </div>
-                 <!-- ./col -->
+                     <!-- /.row -->
+                     <!-- Main row -->
+
+
+
+
+
+                     <!-- end -->
+                 </div><!-- /.container-fluid -->
              </div>
-             <!-- Default box -->
-             <div class="jumbotron jumbotron-fluid">
-                 <div class="container">
-                     <h1 class="display-4">Fluid jumbotron</h1>
-                     <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
-                 </div>
-             </div>
-             <!-- /.card -->
-
          </section>
          <!-- /.content -->
      </div>

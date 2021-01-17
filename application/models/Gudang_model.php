@@ -60,7 +60,7 @@ class Gudang_model extends CI_Model
 
     function material_msk()
     {
-        $query = $this->db->query("SELECT * FROM material JOIN material_masuk JOIN supplier ON material.kd_material=material_masuk.kd_material AND material_masuk.supplier=supplier.id_sup WHERE material.detail='Gudang'");
+        $query = $this->db->query("SELECT * FROM material JOIN material_masuk JOIN supplier ON material.kd_material=material_masuk.kd_material AND material_masuk.supplier=supplier.id_sup WHERE material.detail='Gudang' ORDER BY kd_masuk DESC");
         return $query->result();
     }
 
@@ -83,5 +83,9 @@ class Gudang_model extends CI_Model
     function user($kd)
     {
         return $this->db->query("SELECT * FROM user JOIN pegawai ON user.id_pegawai=pegawai.id_pegawai WHERE user.id_pegawai=$kd")->row_array();
+    }
+    function edit_out($kd)
+    {
+        return $this->db->query("SELECT * FROM material_keluar JOIN material ON material_keluar.kd_material=material.kd_material WHERE kd_keluar=$kd")->row_array();
     }
 }

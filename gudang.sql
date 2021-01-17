@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 16, 2021 at 02:50 PM
+-- Generation Time: Jan 17, 2021 at 05:59 PM
 -- Server version: 10.3.16-MariaDB
 -- PHP Version: 7.3.7
 
@@ -32,20 +32,11 @@ CREATE TABLE `material` (
   `kd_material` int(11) NOT NULL,
   `nama` varchar(255) NOT NULL,
   `varian` enum('Arabica','Robusta') NOT NULL,
-  `tipe` enum('Semi Washed','Full Washed','Natural Fermented','Honey Proses','Wine Proses') NOT NULL,
+  `tipe` enum('Semi Washed','Full Washed','Natural Fermented','Honey Proses','Wine Fermented') NOT NULL,
+  `bentuk` enum('Bubuk Kopi','Biji Kopi Roast') NOT NULL,
   `stok` int(11) NOT NULL,
   `detail` enum('Kasir','Gudang') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `material`
---
-
-INSERT INTO `material` (`kd_material`, `nama`, `varian`, `tipe`, `stok`, `detail`) VALUES
-(23, 'Gayo Premium', 'Arabica', 'Semi Washed', 1000, 'Gudang'),
-(24, 'Gayo Premium', 'Arabica', 'Semi Washed', 0, 'Kasir'),
-(25, 'Gayo Peaberry', 'Arabica', 'Natural Fermented', 10, 'Gudang'),
-(26, 'Gayo Peaberry', 'Arabica', 'Natural Fermented', 0, 'Kasir');
 
 -- --------------------------------------------------------
 
@@ -63,13 +54,6 @@ CREATE TABLE `material_keluar` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `material_keluar`
---
-
-INSERT INTO `material_keluar` (`kd_keluar`, `kd_material`, `waktu`, `jumlah`, `detail`, `status`) VALUES
-(11, 25, '2021-01-16 14:48:51', 90, 'gudang', 1);
-
---
 -- Triggers `material_keluar`
 --
 DELIMITER $$
@@ -77,6 +61,20 @@ CREATE TRIGGER `material_out` AFTER INSERT ON `material_keluar` FOR EACH ROW BEG
 	UPDATE material SET stok = stok - NEW.jumlah
 	WHERE NEW.kd_material=material.kd_material
     AND material.stok > NEW.jumlah ;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `mtrl_klr_update` AFTER UPDATE ON `material_keluar` FOR EACH ROW BEGIN 
+	UPDATE material SET stok = (stok + OLD.jumlah)-NEW.jumlah
+	WHERE NEW.kd_material=material.kd_material AND NEW.detail='Gudang';
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `on_delete` AFTER DELETE ON `material_keluar` FOR EACH ROW BEGIN 
+	UPDATE material SET stok = stok + OLD.jumlah
+	WHERE OLD.kd_material=material.kd_material AND OLD.detail='Gudang';
 END
 $$
 DELIMITER ;
@@ -95,14 +93,6 @@ CREATE TABLE `material_masuk` (
   `supplier` int(11) DEFAULT NULL,
   `detail` enum('Kasir','Gudang') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `material_masuk`
---
-
-INSERT INTO `material_masuk` (`kd_masuk`, `kd_material`, `waktu`, `jumlah`, `supplier`, `detail`) VALUES
-(37, 25, '2021-01-16 14:43:17', 100, 9, 'Gudang'),
-(38, 23, '2021-01-16 14:21:49', 1000, 9, 'Gudang');
 
 --
 -- Triggers `material_masuk`
@@ -152,14 +142,6 @@ CREATE TABLE `pegawai` (
   `role` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `pegawai`
---
-
-INSERT INTO `pegawai` (`id_pegawai`, `nama`, `jenkel`, `tgl_lahir`, `no_hp`, `alamat`, `role`) VALUES
-(1, 'Indriani Puji', 'P', '1998-06-14', '08722217767', 'Jl. Magelang Km 5, Sleman', 3),
-(6, 'Assabil Nur alfiansyah', 'L', '2021-01-01', '081521555980', 'Yogyakarta', 3);
-
 -- --------------------------------------------------------
 
 --
@@ -200,11 +182,7 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `id_pegawai`, `role`) VALUES
-(1, 'admin', '$2y$10$FmO8fDbUZcPH7X9NP1NGoetVZ5YCo86uzQ2iBcOmH9UFBaNc1L86a', 0, 1),
-(4, 'kasir', '$2y$10$DJoHAGNekv4ZcOXk5fUQg.DQ0IS0tYB83KNr/Taviw7KfrGooiaVy', 4, 2),
-(5, 'gudang', '$2y$10$Rr1roEtcJzY1WSkSICHdXOhUNVkqJMDL0voCiX/ljJ0IpSo6lqeK2', 2, 2),
-(6, 'diana', '$2y$10$7YzIqby8P1Cvm1JAYsJYEeMjtV2/OGrGJVtEYl/YOKoGxraVEm/mW', 5, 2),
-(7, 'indri', '$2y$10$3Z6wHHAm.bq7kBy9yaCItONA3TKYcNVE1Usaeexp3hVFNMfaNupwq', 1, 2);
+(1, 'admin', '$2y$10$FmO8fDbUZcPH7X9NP1NGoetVZ5YCo86uzQ2iBcOmH9UFBaNc1L86a', 0, 1);
 
 --
 -- Indexes for dumped tables
@@ -257,25 +235,25 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `material`
 --
 ALTER TABLE `material`
-  MODIFY `kd_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `kd_material` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `material_keluar`
 --
 ALTER TABLE `material_keluar`
-  MODIFY `kd_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `kd_keluar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `material_masuk`
 --
 ALTER TABLE `material_masuk`
-  MODIFY `kd_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `kd_masuk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `pegawai`
 --
 ALTER TABLE `pegawai`
-  MODIFY `id_pegawai` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_pegawai` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `supplier`
@@ -287,7 +265,7 @@ ALTER TABLE `supplier`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Constraints for dumped tables
